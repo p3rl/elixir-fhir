@@ -14,12 +14,12 @@ defmodule ExFhir.Model.ResourceId do
     %ResourceId{baseuri: baseuri, resource_type: resource_type, id: id, version: ""}
   end
 
-  def to_string(%ResourceId{baseuri: baseuri, resource_type: resource_type, id: id, version: version}) when version !== "" do
-    "#{baseuri}/#{resource_type}/#{id}/_history/#{version}"
+  def to_string(%ResourceId{version: version} = id) when version !== "" do
+    "#{id.baseuri}/#{id.resource_type}/#{id.id}/_history/#{id.version}"
   end
 
-  def to_string(%ResourceId{baseuri: baseuri, resource_type: resource_type, id: id}) do
-    "#{baseuri}/#{resource_type}/#{id}"
+  def to_string(%ResourceId{} = id) do
+    "#{id.baseuri}/#{id.resource_type}/#{id.id}"
   end
 
 end
