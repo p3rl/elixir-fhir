@@ -9,8 +9,7 @@ defmodule ExFhir do
     children = [
       # Start the endpoint when the application starts
       supervisor(ExFhir.Endpoint, []),
-      # Here you could define other workers and supervisors as children
-      # worker(ExFhir.Worker, [arg1, arg2, arg3]),
+      worker(ExFhir.InMemoryFhirRepository, []),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

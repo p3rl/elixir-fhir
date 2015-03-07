@@ -1,23 +1,23 @@
 defmodule ExFhir.FhirController do
   use Phoenix.Controller
-
+  alias ExFhir.FhirService, as: FhirService
   plug :action
 
   def get_resources(conn, %{"resource_type" => resource_type}) do
     resource_type
-    |> ExFhir.FhirService.get_all
+    |> FhirService.get_all
     |> to_json(conn)
   end
 
   def get_resource_instance(conn, %{"resource_type" => resource_type, "id" => id}) do
     resource_type
-    |> ExFhir.FhirService.get_resource(id)
+    |> FhirService.get_resource(id)
     |> to_json(conn)
   end
 
   def get_resource_instance_version(conn, %{"resource_type" => resource_type, "id" => id, "version" => version}) do
     resource_type
-    |> ExFhir.FhirService.get_resource_version(id, version)
+    |> FhirService.get_resource_version(id, version)
     |> to_json(conn)
   end
 

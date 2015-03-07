@@ -1,6 +1,8 @@
 defmodule ExFhir.FhirService do
   require Logger
 
+  @baseurl "http://localhost"
+
   def get_all(resource_type) do
     Logger.info "[FhirService] get all (#{resource_type})"
     %{"resourceType" => resource_type}
