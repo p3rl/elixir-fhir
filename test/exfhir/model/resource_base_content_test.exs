@@ -4,7 +4,6 @@ defmodule ExFhir.Model.ResourceBaseContentTest do
 
   test "parse base content with meta succeeds" do
     bc = ResourceBaseContent.from_json(patient_json)
-    IO.inspect bc
     assert bc.id.resource_type === "patient"
     assert bc.id.id === "1"
     assert bc.meta.versionid === "2"
@@ -13,7 +12,6 @@ defmodule ExFhir.Model.ResourceBaseContentTest do
 
   test "parse base content with no meta succeeds" do
     bc = ResourceBaseContent.from_json(patient_not_meta_json)
-    IO.inspect bc
     assert bc.id.resource_type === "patient"
     assert bc.id.id === "1"
   end

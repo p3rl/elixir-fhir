@@ -7,18 +7,18 @@ defmodule ExFhir.InMemoryFhirRepository do
   end
 
   def init(:ok) do
-    Logger.info "Initializing inmemory FHIR repository"
+    Logger.info "[FhirRepo] Initializing inmemory FHIR repository"
     {:ok, %{resources: []}}
   end
 
   def handle_call({:get_all, resourcetype}, _from, db) do
-    Logger.info "get all #{resourcetype}"
+    Logger.info "[FhirRepo] get all #{resourcetype}"
     {:reply, db.resources, db}
   end
 
-  def handle_call({:insert, resource}, _from, db) do
-    Logger.info "insert resource"
-    {:reply, :ok, %{db | resources: [resource | db.resources]}}
+  def handle_call({:insert, resource_base_content, resource}, _from, db) do
+    Logger.info "[FhirRepo] insert resource"
+    {:reply, resource, %{db | resources: [resource | db.resources]}}
   end
 
 end

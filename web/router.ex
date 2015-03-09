@@ -23,5 +23,6 @@ defmodule ExFhir.Router do
     get "/:resource_type", FhirController, :get_resources
     get "/:resource_type/:id", FhirController, :get_resource_instance
     get "/:resource_type/:id/_history/:version", FhirController, :get_resource_instance_version
+    post "/:resource_type", FhirController, :create_resource
   end
 end
