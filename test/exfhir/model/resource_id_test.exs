@@ -1,5 +1,5 @@
 defmodule ExFhir.Model.ResourceIdTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   alias ExFhir.Model.ResourceId, as: ResourceId
 
   test "build creates correct id" do

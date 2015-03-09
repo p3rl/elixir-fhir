@@ -1,7 +1,7 @@
 defmodule ExFhir.FhirService do
   require Logger
 
-  alias ExFhir.FhirRepository, as: FhirRepo
+  alias ExFhir.FhirRepo, as: FhirRepo
   alias ExFhir.Model.ResourceBaseContent, as: ResourceBaseContent
 
   @baseurl "http://localhost"
@@ -23,13 +23,10 @@ defmodule ExFhir.FhirService do
 
   def create_resource(resource_type, resource) do
     Logger.info "[FhirService] create resource #{resource_type}"
-
     try do
-      ResourceBaseContent.from_resource(resource)
-      |> FhirRepo.insert(resource)
-      |> success
+      resource |> FhirRepo.insert |> success
     rescue
-      e in RuntimeError -> {:error, %{message: "FAIL", error_code: 400}}
+      _ -> {:error, %{message: "FAIL", error_code: 400}}
     end
   end
 

@@ -1,5 +1,5 @@
 defmodule ExFhir.Model.ResourceBaseContentTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   alias ExFhir.Model.ResourceBaseContent, as: ResourceBaseContent
 
   test "parse base content with meta succeeds" do

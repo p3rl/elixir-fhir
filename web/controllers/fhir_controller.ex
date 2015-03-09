@@ -35,7 +35,7 @@ defmodule ExFhir.FhirController do
     json conn, response
   end
 
-  defp create_error_response(conn, reason) do
+  defp create_error_response(_conn, reason) do
     %{"reason" => reason.message, "error_code" => 400}
   end
 
