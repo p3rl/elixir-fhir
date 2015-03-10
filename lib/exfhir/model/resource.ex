@@ -19,4 +19,7 @@ defmodule ExFhir.Model.Resource do
   end
 
   def is_type(%{} = resource, type), do: String.downcase(resource["resourceType"]) === String.downcase(type)
+
+  def get_type(%{"resourceType" => resourcetype}), do: String.downcase(resourcetype)
+
 end

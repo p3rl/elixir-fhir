@@ -1,5 +1,5 @@
 defmodule ExFhir.Model.InMemoryFhirRepo.Test do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
   alias ExFhir.FhirRepo, as: Repo
   alias ExFhir.Model.Resource, as: Resource
 
@@ -20,12 +20,12 @@ defmodule ExFhir.Model.InMemoryFhirRepo.Test do
     |> Enum.map(&(Repo.insert(&1)))
 
     patients = Repo.get_all("patient")
-    assert patients !== nil
+    assert Enum.count(patients) == 1
 
     questionnaires = Repo.get_all("QuestiOnnaire")
-    assert questionnaires !== nil
+    assert Enum.count(questionnaires) == 1
 
     answers = Repo.get_all("QuestionNaireanswers")
-    assert answers !== nil
+    assert Enum.count(answers) == 1
   end
 end
