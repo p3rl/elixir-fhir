@@ -1,25 +1,24 @@
 defmodule ExFhir.Model.ResourceId do
   alias ExFhir.Model.ResourceId, as: ResourceId
-  defstruct baseuri: "", resource_type: "", id: "", version: ""
 
-  def build(baseuri, resource_type, id, version) do
-    %ResourceId{baseuri: baseuri, resource_type: resource_type, id: id, version: version}
+  defstruct baseuri: "", resourcetype: "", id: "", vid: ""
+
+  def build(baseuri, resourcetype, id, vid) do
+    %ResourceId{baseuri: baseuri, resourcetype: resourcetype, id: id, vid: vid}
   end
 
-  def has_version(%ResourceId{version: version}) do
-    version !== ""
+  def has_version(%ResourceId{vid: vid}), do: vid !== ""
+
+  def without_version(%ResourceId{baseuri: baseuri, resourcetype: resourcetype, id: id, vid: _vid}) do
+    %ResourceId{baseuri: baseuri, resourcetype: resourcetype, id: id, vid: ""}
   end
 
-  def without_version(%ResourceId{baseuri: baseuri, resource_type: resource_type, id: id, version: _version}) do
-    %ResourceId{baseuri: baseuri, resource_type: resource_type, id: id, version: ""}
-  end
-
-  def to_string(%ResourceId{version: version} = id) when version !== "" do
-    "#{id.baseuri}/#{id.resource_type}/#{id.id}/_history/#{id.version}"
+  def to_string(%ResourceId{vid: vid} = id) when vid !== "" do
+    "#{id.baseuri}/#{id.resourcetype}/#{id.id}/_history/#{id.vid}"
   end
 
   def to_string(%ResourceId{} = id) do
-    "#{id.baseuri}/#{id.resource_type}/#{id.id}"
+    "#{id.baseuri}/#{id.resourcetype}/#{id.id}"
   end
 
 end

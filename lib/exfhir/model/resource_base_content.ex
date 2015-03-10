@@ -17,7 +17,7 @@ defmodule ExFhir.Model.ResourceBaseContent do
   defp parse_id(%{"resourceType" => resource_type} = resource) do
     %ResourceId
     {
-      resource_type: resource_type,
+      resourcetype: resource_type,
       id: Dict.get(resource, "id", "")
     }
   end
@@ -25,7 +25,7 @@ defmodule ExFhir.Model.ResourceBaseContent do
   defp parse_meta(%{"meta" => meta}) do
     %ResourceMeta
     {
-      versionid: Dict.get(meta, "versionId", ""),
+      vid: Dict.get(meta, "versionId", ""),
       lastupdated: Dict.get(meta, "lastUpdated", "")
     }
   end

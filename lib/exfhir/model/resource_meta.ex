@@ -1,3 +1,3 @@
 defmodule ExFhir.Model.ResourceMeta do
-  defstruct versionid: "", lastupdated: "", profile: [], security: [], tag: []
+  defstruct vid: "", lastupdated: "", profile: [], security: [], tag: []
 end

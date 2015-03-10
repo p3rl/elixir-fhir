@@ -1,17 +1,26 @@
 defmodule ExFhir.Model.InMemoryFhirRepo.Test do
-  use ExUnit.Case, async: false
+  use ExUnit.Case
   alias ExFhir.FhirRepo, as: Repo
   alias ExFhir.Model.Resource, as: Resource
 
   test "insert resource adds resource to db" do
-    resource =
-    "patient"
-    |> Resource.create
-    |> Repo.insert
+    p1 = Resource.create("patient") |> Repo.insert
+    p2 = Resource.create("patient") |> Repo.insert
 
-    assert resource["resourceType"] === "patient"
-    assert resource["id"] === "1"
-    assert resource["meta"]["versionId"] === "1"
+    assert p1["resourceType"] === "patient"
+    assert p1["id"] === "1"
+    assert p1["meta"]["versionId"] === "1"
+
+    assert p2["resourceType"] === "patient"
+    assert p2["id"] === "2"
+    assert p2["meta"]["versionId"] === "1"
+  end
+
+  test "update resource assigns correct version id" do
+    patient = Resource.create("patient") |> Repo.insert |> Repo.update
+    id = Resource.get_identity(patient)
+    assert id.id === "1"
+    assert id.vid === "2"
   end
 
   test "get all returns existing resources" do

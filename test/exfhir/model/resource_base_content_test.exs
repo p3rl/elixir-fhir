@@ -4,15 +4,15 @@ defmodule ExFhir.Model.ResourceBaseContentTest do
 
   test "parse base content with meta succeeds" do
     bc = ResourceBaseContent.from_json(patient_json)
-    assert bc.id.resource_type === "patient"
+    assert bc.id.resourcetype === "patient"
     assert bc.id.id === "1"
-    assert bc.meta.versionid === "2"
+    assert bc.meta.vid === "2"
     assert bc.meta.lastupdated === "2015-01-01"
   end
 
   test "parse base content with no meta succeeds" do
     bc = ResourceBaseContent.from_json(patient_not_meta_json)
-    assert bc.id.resource_type === "patient"
+    assert bc.id.resourcetype === "patient"
     assert bc.id.id === "1"
   end
 
