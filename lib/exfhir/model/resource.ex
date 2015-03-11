@@ -1,5 +1,6 @@
 defmodule ExFhir.Model.Resource do
   alias ExFhir.Model.ResourceId, as: ResourceId
+  alias ExFhir.Model.ResourceMeta, as: ResourceMeta
 
   def create(resourcetype), do: %{"resourceType" => resourcetype}
 
@@ -21,13 +22,20 @@ defmodule ExFhir.Model.Resource do
 
   def is_type(%{"resourceType" => resourcetype}, type), do: String.downcase(resourcetype) === String.downcase(type)
 
-  def get_type(%{"resourceType" => resourcetype}), do: String.downcase(resourcetype)
+  def get_type(%{"resourceType" => resourcetype}), do: resourcetype
 
   def get_identity(%{"resourceType" => resourcetype} = resource) do
     id = Dict.get(resource, "id", "")
     meta = Dict.get(resource, "meta", %{})
     vid = Dict.get(meta, "versionId", "")
     %ResourceId{resourcetype: resourcetype, id: id, vid: vid}
+  end
+
+  def get_meta(%{"resourceType" => resourcetype} = resource) do
+    meta = Dict.get(resource, "meta", %{})
+    vid = Dict.get(meta, "versionId", "")
+    updated = Dict.get(meta, "lastUpdated", "")
+    %ResourceMeta{vid: vid, lastupdated: updated}
   end
 
   def get_vid(%{"resourceType" => _resourcetype, "meta" => %{"versionId" => vid}}), do: vid

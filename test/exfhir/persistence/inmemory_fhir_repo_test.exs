@@ -3,6 +3,13 @@ defmodule ExFhir.Model.InMemoryFhirRepo.Test do
   alias ExFhir.FhirRepo, as: Repo
   alias ExFhir.Model.Resource, as: Resource
 
+  setup do
+    case ExFhir.InMemoryFhirRepo.start_link() do
+      {:ok, _state} -> :ok
+      _ -> :error
+    end
+  end
+
   test "insert resource adds resource to db" do
     p1 = Resource.create("patient") |> Repo.insert
     p2 = Resource.create("patient") |> Repo.insert
@@ -24,9 +31,11 @@ defmodule ExFhir.Model.InMemoryFhirRepo.Test do
   end
 
   test "get all returns existing resources" do
+
     ["Patient", "Questionnaire", "QuestionnaireAnswers"]
     |> Enum.map(&(Resource.create(&1)))
     |> Enum.map(&(Repo.insert(&1)))
+    |> Enum.map(&(Repo.update(&1)))
 
     patients = Repo.get_all("patient")
     assert Enum.count(patients) == 1
@@ -36,5 +45,18 @@ defmodule ExFhir.Model.InMemoryFhirRepo.Test do
 
     answers = Repo.get_all("QuestionNaireanswers")
     assert Enum.count(answers) == 1
+  end
+
+  test "get resource with id and version returns correct resource" do
+    expected_patient = Resource.create("patient") |> Repo.insert
+    expected_id = Resource.get_identity(expected_patient)
+    expected_meta = Resource.get_meta(expected_patient)
+
+    patient = Repo.get_resource("patient", id: expected_id.id, vid: expected_id.vid)
+    assert patient !== nil
+    id = Resource.get_identity(patient)
+    meta = Resource.get_meta(patient)
+
+    assert expected_id.id == id.id
   end
 end
