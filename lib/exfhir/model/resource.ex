@@ -19,7 +19,7 @@ defmodule ExFhir.Model.Resource do
     Dict.put(resource, "meta", %{meta | "versionId" => vid})
   end
 
-  def is_type(%{} = resource, type), do: String.downcase(resource["resourceType"]) === String.downcase(type)
+  def is_type(%{"resourceType" => resourcetype}, type), do: String.downcase(resourcetype) === String.downcase(type)
 
   def get_type(%{"resourceType" => resourcetype}), do: String.downcase(resourcetype)
 
@@ -29,4 +29,6 @@ defmodule ExFhir.Model.Resource do
     vid = Dict.get(meta, "versionId", "")
     %ResourceId{resourcetype: resourcetype, id: id, vid: vid}
   end
+
+  def get_vid(%{"resourceType" => _resourcetype, "meta" => %{"versionId" => vid}}), do: vid
 end
