@@ -38,6 +38,18 @@ defmodule ExFhir.InMemoryFhirRepo do
     {:reply, resource, db}
   end
 
+  def handle_call({:get_resource, resourcetype, [id: id]}, _from, db) do
+    Logger.info "[FhirRepo] get resource #{resourcetype}, id #{id}"
+
+    resource =
+      db.resources
+      |> Enum.filter(&(Resource.is_type(&1, resourcetype)))
+      |> Enum.filter(&(is_latest_version(&1, db)))
+      |> Enum.find(&(Resource.get_id(&1) == id))
+
+    {:reply, resource, db}
+  end
+
   def handle_call({:insert, resource}, _from, db) do
     Logger.info "[FhirRepo] insert resource"
 

@@ -50,7 +50,6 @@ defmodule ExFhir.Model.InMemoryFhirRepo.Test do
   test "get resource with id and version returns correct resource" do
     expected_patient = Resource.create("patient") |> Repo.insert
     expected_id = Resource.get_identity(expected_patient)
-    expected_meta = Resource.get_meta(expected_patient)
 
     patient = Repo.get_resource("patient", id: expected_id.id, vid: expected_id.vid)
     assert patient !== nil
@@ -58,5 +57,23 @@ defmodule ExFhir.Model.InMemoryFhirRepo.Test do
     meta = Resource.get_meta(patient)
 
     assert expected_id.id == id.id
+    assert expected_id.vid == id.vid
+    assert expected_id.resourcetype == id.resourcetype
   end
+
+  test "get resource with id returns correct resource" do
+    expected_patient =
+      Resource.create("patient")
+      |> Repo.insert
+      |> Repo.update
+
+    expected_id = Resource.get_identity(expected_patient)
+    patient = Repo.get_resource("patient", id: expected_id.id)
+    id = Resource.get_identity(patient)
+
+    assert expected_id.id == id.id
+    assert expected_id.vid == id.vid
+    assert expected_id.resourcetype == id.resourcetype
+  end
+
 end

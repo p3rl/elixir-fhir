@@ -31,7 +31,7 @@ defmodule ExFhir.Model.Resource do
     %ResourceId{resourcetype: resourcetype, id: id, vid: vid}
   end
 
-  def get_meta(%{"resourceType" => resourcetype} = resource) do
+  def get_meta(%{"resourceType" => _resourcetype} = resource) do
     meta = Dict.get(resource, "meta", %{})
     vid = Dict.get(meta, "versionId", "")
     updated = Dict.get(meta, "lastUpdated", "")
@@ -39,4 +39,9 @@ defmodule ExFhir.Model.Resource do
   end
 
   def get_vid(%{"resourceType" => _resourcetype, "meta" => %{"versionId" => vid}}), do: vid
+
+  def get_id(%{"resourceType" => _resourcetype, "id" => id}), do: id
+
+  def get_id(%{"resourceType" => _resourcetype}), do: ""
+
 end

@@ -28,4 +28,16 @@ defmodule ExFhir.Model.ResourceTest do
     assert resource["meta"]["versionId"] === "42"
     assert resource["meta"]["lastUpdated"] === "2015-03-05"
   end
+
+  test "get logical id for resource with id returns id" do
+    import Resource
+    resource = create("patient") |> with_id("1")
+    assert get_id(resource) === "1"
+  end
+
+  test "get logical id for resource without id returns empty string" do
+    id = Resource.create("patient") |> Resource.get_id
+    assert id === ""
+  end
+
 end
