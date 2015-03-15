@@ -20,9 +20,9 @@ defmodule ExFhir.Router do
 
   scope "/api", ExFhir do
     pipe_through :api
-    get "/:resource_type", FhirController, :get_resources
-    get "/:resource_type/:id", FhirController, :get_resource_instance
-    get "/:resource_type/:id/_history/:version", FhirController, :get_resource_instance_version
-    post "/:resource_type", FhirController, :create_resource
+    get "/:resourcetype", FhirController, :get_all_resources
+    get "/:resourcetype/:id", FhirController, :get_resource
+    get "/:resourcetype/:id/_history/:version", FhirController, :get_resource_version
+    post "/:resourcetype", FhirController, :create_resource
   end
 end

@@ -1,47 +1,40 @@
 defmodule ExFhir.FhirController do
   use Phoenix.Controller
-
   alias ExFhir.FhirService, as: FhirService
-
   plug :action
 
-  def get_resources(conn, %{"resource_type" => resource_type}) do
-    resource_type
-    |> FhirService.get_all
-    |> to_json(conn)
+  def get_all_resources(conn, %{"resourcetype" => resourcetype}) do
+    FhirService.get_all(resourcetype) |> create_response(conn)
   end
 
-  def get_resource_instance(conn, %{"resource_type" => resource_type, "id" => id}) do
-    resource_type
+  def get_resource(conn, %{"resourcetype" => resourcetype, "id" => id}) do
+    resourcetype
     |> FhirService.get_resource(id)
-    |> to_json(conn)
+    |> create_response(conn)
   end
 
-  def get_resource_instance_version(conn, %{"resource_type" => resource_type, "id" => id, "version" => version}) do
-    resource_type
+  def get_resource_version(conn, %{"resourcetype" => resourcetype, "id" => id, "version" => version}) do
+    resourcetype
     |> FhirService.get_resource_version(id, version)
-    |> to_json(conn)
+    |> create_response(conn)
   end
 
-  def create_resource(conn, %{"resource_type" => resource_type}) do
-    body = Dict.delete(conn.params, "format")
-    case FhirService.create_resource(resource_type, body) do
-      {:ok, resource} -> json conn, resource
-      {:error, reason} -> process_error(conn, reason)
-    end
+  def create_resource(conn, %{"resourcetype" => resourcetype}) do
+    body =
+      conn.params
+      |> Dict.delete("format")
+      |> Dict.delete("resourcetype")
+
+    resourcetype
+    |> FhirService.create_resource(body)
+    |> create_response(conn)
   end
 
-  defp to_json(response, conn) do
-    json conn, response
+  defp create_response({:ok, resource}, conn) do
+    json conn, resource
   end
 
-  defp create_error_response(_conn, reason) do
-    %{"reason" => reason.message, "error_code" => 400}
-  end
-
-  defp process_error(conn, reason) do
-    conn
-    |> create_error_response(reason)
-    |> to_json(conn)
+  defp create_response({:error, reason}, conn) do
+    json conn, %{"reason" => reason}
   end
 end

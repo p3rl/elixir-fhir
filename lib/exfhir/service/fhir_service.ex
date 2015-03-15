@@ -1,35 +1,36 @@
 defmodule ExFhir.FhirService do
-  require Logger
-
-  alias ExFhir.FhirRepo, as: FhirRepo
-  alias ExFhir.Model.ResourceBaseContent, as: ResourceBaseContent
-
   @baseurl "http://localhost"
+
+  require Logger
+  alias ExFhir.FhirRepo, as: FhirRepo
 
   def get_all(resourcetype) do
     Logger.info "[FhirService] get all (#{resourcetype})"
     FhirRepo.get_all(resourcetype)
   end
 
-  def get_resource(resource_type, id) do
-    Logger.info "[FhirService] get resource (#{resource_type}, #{id})"
-    %{"resourceType" => resource_type, "id" => id}
+  def get_resource(resourcetype, id) when resourcetype !== "" and id !== "" do
+    Logger.info "[FhirService] get resource (#{resourcetype}, #{id})"
+    FhirRepo.get_resource(resourcetype, id: id)
   end
 
-  def get_resource_version(resource_type, id, version) do
-    Logger.info "[FhirService] get resource version (#{resource_type}, #{id}, #{version})"
-    %{"resourceType" => resource_type, "id" => id, "version" => version}
+  def get_resource(resourcetype, _id) when is_nil(resourcetype) or resourcetype === "",
+    do: {:error, "Invalid resource type"}
+
+  def get_resource(_resourcetype, id) when is_nil(id) or id === "",
+    do: {:error, "Invalid resource id"}
+
+  def get_resource_version(resourcetype, id, vid) when resourcetype !== "" and id !== "" and vid !== "" do
+    Logger.info "[FhirService] get resource version (#{resourcetype}, #{id}, #{vid})"
+    FhirRepo.get_resource(resourcetype, id: id, vid: vid)
   end
 
-  def create_resource(resource_type, resource) do
-    Logger.info "[FhirService] create resource #{resource_type}"
-    try do
-      resource |> FhirRepo.insert |> success
-    rescue
-      _ -> {:error, %{message: "FAIL", error_code: 400}}
-    end
+  def create_resource(resourcetype, %{"resourceType" => type}) when resourcetype !== type do
+    {:error, "Mismatch resource type"}
   end
 
-  defp success(resource), do: {:ok, resource}
-
+  def create_resource(resourcetype, resource) do
+    Logger.info "[FhirService] create resource #{resourcetype}"
+    FhirRepo.insert(resource)
+  end
 end

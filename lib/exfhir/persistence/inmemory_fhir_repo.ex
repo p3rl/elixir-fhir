@@ -23,7 +23,7 @@ defmodule ExFhir.InMemoryFhirRepo do
       |> Enum.filter(&(Resource.is_type(&1, resourcetype)))
       |> Enum.filter(&(is_latest_version(&1, db)))
 
-    {:reply, resources, db}
+    {:reply, {:ok, resources}, db}
   end
 
   def handle_call({:get_resource, resourcetype, [id: id, vid: vid]}, _from, db) do
@@ -35,7 +35,7 @@ defmodule ExFhir.InMemoryFhirRepo do
       downcase(id.resourcetype) == req_id.resourcetype and id.id == req_id.id and id.vid == req_id.vid
     end)
 
-    {:reply, resource, db}
+    {:reply, {:ok, resource}, db}
   end
 
   def handle_call({:get_resource, resourcetype, [id: id]}, _from, db) do
@@ -47,7 +47,7 @@ defmodule ExFhir.InMemoryFhirRepo do
       |> Enum.filter(&(is_latest_version(&1, db)))
       |> Enum.find(&(Resource.get_id(&1) == id))
 
-    {:reply, resource, db}
+    {:reply, {:ok, resource}, db}
   end
 
   def handle_call({:insert, resource}, _from, db) do
@@ -65,7 +65,7 @@ defmodule ExFhir.InMemoryFhirRepo do
       |> Resource.with_id(to_string(nextid))
       |> Resource.with_meta(vid: "1", updated: get_date_time())
 
-    {:reply, resource, %{db | resources: [resource | db.resources], counters: counters}}
+    {:reply, {:ok, resource}, %{db | resources: [resource | db.resources], counters: counters}}
   end
 
   def handle_call({:update, resource}, _from, db) do
@@ -82,7 +82,7 @@ defmodule ExFhir.InMemoryFhirRepo do
       resource
       |> Resource.with_meta(vid: to_string(nextvid), updated: get_date_time())
 
-    {:reply, resource, %{db | resources: [resource | db.resources], counters: counters}}
+    {:reply, {:ok, resource}, %{db | resources: [resource | db.resources], counters: counters}}
   end
 
   defp get_date_time(), do: DateFormat.format!(Date.now(), "{ISO}")

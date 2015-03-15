@@ -11,8 +11,8 @@ defmodule ExFhir.Model.InMemoryFhirRepo.Test do
   end
 
   test "insert resource adds resource to db" do
-    p1 = Resource.create("patient") |> Repo.insert
-    p2 = Resource.create("patient") |> Repo.insert
+    p1 = Resource.create("patient") |> Repo.insert!
+    p2 = Resource.create("patient") |> Repo.insert!
 
     assert p1["resourceType"] === "patient"
     assert p1["id"] === "1"
@@ -24,7 +24,7 @@ defmodule ExFhir.Model.InMemoryFhirRepo.Test do
   end
 
   test "update resource assigns correct version id" do
-    patient = Resource.create("patient") |> Repo.insert |> Repo.update
+    patient = Resource.create("patient") |> Repo.insert! |> Repo.update!
     id = Resource.get_identity(patient)
     assert id.id === "1"
     assert id.vid === "2"
@@ -34,24 +34,24 @@ defmodule ExFhir.Model.InMemoryFhirRepo.Test do
 
     ["Patient", "Questionnaire", "QuestionnaireAnswers"]
     |> Enum.map(&(Resource.create(&1)))
-    |> Enum.map(&(Repo.insert(&1)))
-    |> Enum.map(&(Repo.update(&1)))
+    |> Enum.map(&(Repo.insert!(&1)))
+    |> Enum.map(&(Repo.update!(&1)))
 
-    patients = Repo.get_all("patient")
+    {:ok, patients} = Repo.get_all("patient")
     assert Enum.count(patients) == 1
 
-    questionnaires = Repo.get_all("QuestiOnnaire")
+    {:ok, questionnaires} = Repo.get_all("QuestiOnnaire")
     assert Enum.count(questionnaires) == 1
 
-    answers = Repo.get_all("QuestionNaireanswers")
+    {:ok, answers} = Repo.get_all("QuestionNaireanswers")
     assert Enum.count(answers) == 1
   end
 
   test "get resource with id and version returns correct resource" do
-    expected_patient = Resource.create("patient") |> Repo.insert
+    expected_patient = Resource.create("patient") |> Repo.insert!
     expected_id = Resource.get_identity(expected_patient)
 
-    patient = Repo.get_resource("patient", id: expected_id.id, vid: expected_id.vid)
+    patient = Repo.get_resource!("patient", id: expected_id.id, vid: expected_id.vid)
     assert patient !== nil
     id = Resource.get_identity(patient)
     meta = Resource.get_meta(patient)
@@ -64,11 +64,11 @@ defmodule ExFhir.Model.InMemoryFhirRepo.Test do
   test "get resource with id returns correct resource" do
     expected_patient =
       Resource.create("patient")
-      |> Repo.insert
-      |> Repo.update
+      |> Repo.insert!
+      |> Repo.update!
 
     expected_id = Resource.get_identity(expected_patient)
-    patient = Repo.get_resource("patient", id: expected_id.id)
+    patient = Repo.get_resource!("patient", id: expected_id.id)
     id = Resource.get_identity(patient)
 
     assert expected_id.id == id.id
