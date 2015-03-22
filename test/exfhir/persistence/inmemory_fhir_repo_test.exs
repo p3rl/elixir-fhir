@@ -54,7 +54,6 @@ defmodule ExFhir.Model.InMemoryFhirRepo.Test do
     patient = Repo.get_resource!("patient", id: expected_id.id, vid: expected_id.vid)
     assert patient !== nil
     id = Resource.get_identity(patient)
-    meta = Resource.get_meta(patient)
 
     assert expected_id.id == id.id
     assert expected_id.vid == id.vid

@@ -35,6 +35,8 @@ defmodule ExFhir.FhirController do
   end
 
   defp create_response({:error, reason}, conn) do
-    json conn, %{"reason" => reason}
+    conn
+    |> put_status(400)
+    |> json %{"reason" => reason}
   end
 end
